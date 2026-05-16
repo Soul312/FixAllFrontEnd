@@ -1,18 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function TopNav({ isAuthed, onSignOut }) {
+export default function TopNav({ isAuthed, role, onSignOut }) {
+  const isPro = role === "PROFESSIONAL";
+
   return (
     <header className="top-nav">
       <div className="brand">
-        <span className="logo-dot" />
+        <img className="logo-img" src="/fixall-logo.jpg" alt="FixAll logo" />
         <span>FixAll</span>
       </div>
       <nav className="nav-links">
-        <Link to="/">Home</Link>
-        <Link to="/client">Client</Link>
-        <Link to="/professional">Professional</Link>
-        <Link to="/profile">Profile</Link>
+        {isPro ? (
+          <>
+            <Link to="/professional">Jobs</Link>
+            <Link to="/profile">Profile</Link>
+          </>
+        ) : (
+          <>
+            <Link to="/client">Dashboard</Link>
+            <Link to="/client/request/new">New request</Link>
+          </>
+        )}
       </nav>
       <div className="nav-actions">
         {!isAuthed ? (
@@ -33,4 +42,3 @@ export default function TopNav({ isAuthed, onSignOut }) {
     </header>
   );
 }
-

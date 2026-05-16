@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '4.0.6'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'com.fixall'
@@ -20,10 +20,22 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.register('copyUi', Copy) {
+    // Copy built SPA into Spring Boot static resources when available.
+    from('ui/dist')
+    into('src/main/resources/static')
+    onlyIf { file('ui/dist').exists() }
+}
+
+tasks.named('processResources') {
+    dependsOn(tasks.named('copyUi'))
 }

@@ -25,9 +25,12 @@ export default function Profile() {
   };
 
   return (
-    <div className="card">
-      <h2>Professional profile</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="panel">
+      <div className="page-header">
+        <h2>Professional profile</h2>
+        <p className="muted">Update your bio and job categories.</p>
+      </div>
+      <form className="form-grid" onSubmit={handleSubmit}>
         <div className="form-row">
           <label>Bio</label>
           <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
@@ -37,9 +40,8 @@ export default function Profile() {
           <input value={categories} onChange={(e) => setCategories(e.target.value)} />
         </div>
         {status ? <p className="small-muted">{status}</p> : null}
-        <button type="submit">Save profile</button>
+        <button className="btn primary" type="submit">Save profile</button>
       </form>
     </div>
   );
 }
-

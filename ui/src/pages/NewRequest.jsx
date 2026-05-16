@@ -36,9 +36,12 @@ export default function NewRequest() {
   };
 
   return (
-    <div className="card">
-      <h2>New request</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="panel">
+      <div className="page-header">
+        <h2>New request</h2>
+        <p className="muted">Share the details so a professional can help quickly.</p>
+      </div>
+      <form className="form-grid" onSubmit={handleSubmit}>
         <div className="form-row">
           <label>Title</label>
           <input value={form.title} onChange={updateField("title")} required />
@@ -60,9 +63,8 @@ export default function NewRequest() {
           <input value={form.longitude} onChange={updateField("longitude")} required />
         </div>
         {status ? <p className="small-muted">{status}</p> : null}
-        <button type="submit">Submit request</button>
+        <button className="btn primary" type="submit">Submit request</button>
       </form>
     </div>
   );
 }
-

@@ -2,12 +2,12 @@ import React from "react";
 import TopNav from "./TopNav.jsx";
 import SideNav from "./SideNav.jsx";
 
-export default function AppLayout({ children, isAuthed, onSignOut }) {
+export default function AppLayout({ children, isAuthed, role, onSignOut }) {
   return (
     <div className="app-shell">
-      <TopNav isAuthed={isAuthed} onSignOut={onSignOut} />
+      <TopNav isAuthed={isAuthed} role={role} onSignOut={onSignOut} />
       <div className="main-grid">
-        <SideNav />
+        <SideNav role={role} />
         <main className="page">{children}</main>
       </div>
       <footer className="footer">
@@ -17,4 +17,3 @@ export default function AppLayout({ children, isAuthed, onSignOut }) {
     </div>
   );
 }
-

@@ -1,6 +1,23 @@
 import React, { useState } from "react";
 import { apiJson } from "../api.js";
 
+const TEST_PROFILES = {
+  client: {
+    fullName: "Test Client",
+    email: "client@test.com",
+    password: "Password123!",
+    phone: "555-0101",
+    role: "CLIENT"
+  },
+  professional: {
+    fullName: "Test Pro",
+    email: "pro@test.com",
+    password: "Password123!",
+    phone: "555-0110",
+    role: "PROFESSIONAL"
+  }
+};
+
 export default function Register() {
   const [form, setForm] = useState({
     email: "",
@@ -30,37 +47,57 @@ export default function Register() {
     }
   };
 
+  const applyTestProfile = (type) => {
+    const profile = TEST_PROFILES[type];
+    if (!profile) return;
+    setForm(profile);
+  };
+
   return (
-    <div className="card">
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-row">
-          <label>Full name</label>
-          <input value={form.fullName} onChange={updateField("fullName")} required />
+    <div className="auth-page">
+      <div className="auth-card">
+        <img className="auth-logo" src="/fixall-logo.jpg" alt="FixAll logo" />
+        <div className="page-header">
+          <h2>Create account</h2>
+          <p className="muted">Join FixAll to request jobs or accept new work.</p>
         </div>
-        <div className="form-row">
-          <label>Email</label>
-          <input value={form.email} onChange={updateField("email")} type="email" required />
-        </div>
-        <div className="form-row">
-          <label>Password</label>
-          <input value={form.password} onChange={updateField("password")} type="password" required />
-        </div>
-        <div className="form-row">
-          <label>Phone</label>
-          <input value={form.phone} onChange={updateField("phone")} required />
-        </div>
-        <div className="form-row">
-          <label>Role</label>
-          <select value={form.role} onChange={updateField("role")}>
-            <option value="CLIENT">Client</option>
-            <option value="PROFESSIONAL">Professional</option>
-          </select>
-        </div>
-        {status ? <p className="small-muted">{status}</p> : null}
-        <button type="submit">Create account</button>
-      </form>
+        <form className="form-grid" onSubmit={handleSubmit}>
+          <div className="form-row">
+            <label>Full name</label>
+            <input value={form.fullName} onChange={updateField("fullName")} required />
+          </div>
+          <div className="form-row">
+            <label>Email</label>
+            <input value={form.email} onChange={updateField("email")} type="email" required />
+          </div>
+          <div className="form-row">
+            <label>Password</label>
+            <input value={form.password} onChange={updateField("password")} type="password" required />
+          </div>
+          <div className="form-row">
+            <label>Phone</label>
+            <input value={form.phone} onChange={updateField("phone")} required />
+          </div>
+          <div className="form-row">
+            <label>Role</label>
+            <select value={form.role} onChange={updateField("role")}>
+              <option value="CLIENT">Client</option>
+              <option value="PROFESSIONAL">Professional</option>
+            </select>
+          </div>
+          <div className="test-row">
+            <span className="test-label">Test profiles</span>
+            <button className="btn ghost" type="button" onClick={() => applyTestProfile("client")}>
+              Client
+            </button>
+            <button className="btn ghost" type="button" onClick={() => applyTestProfile("professional")}>
+              Professional
+            </button>
+          </div>
+          {status ? <p className="small-muted">{status}</p> : null}
+          <button className="btn primary" type="submit">Create account</button>
+        </form>
+      </div>
     </div>
   );
 }
-

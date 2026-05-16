@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Frontend (Vite)
+ui/node_modules/
+ui/dist/
+ui/.env

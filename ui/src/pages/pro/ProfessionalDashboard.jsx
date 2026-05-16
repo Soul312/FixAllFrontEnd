@@ -33,12 +33,30 @@ export default function ProfessionalDashboard() {
 
   return (
     <div className="stack-lg">
-      <div className="panel">
+      <section className="panel hero-panel">
         <div className="page-header">
-          <h2>Professional dashboard</h2>
-          <p className="muted">Find nearby requests and accept jobs.</p>
+          <p className="eyebrow">Professional dashboard</p>
+          <h2>Find nearby requests</h2>
+          <p className="muted">Search by location and accept jobs that fit your skills.</p>
         </div>
-        <div className="form-grid">
+        <div className="row">
+          <button className="btn primary" type="button" onClick={loadJobs}>
+            Refresh list
+          </button>
+          <button className="btn ghost" type="button" onClick={() => setJobs([])}>
+            Clear results
+          </button>
+        </div>
+      </section>
+
+      <section className="panel">
+        <div className="panel-header">
+          <div>
+            <h3>Search filters</h3>
+            <p className="muted">Adjust radius to widen or narrow your search.</p>
+          </div>
+        </div>
+        <div className="form-grid form-grid-3">
           <div className="form-row">
             <label>Latitude</label>
             <input value={filters.latitude} onChange={updateField("latitude")} />
@@ -55,28 +73,47 @@ export default function ProfessionalDashboard() {
             Load requests
           </button>
         </div>
-      </div>
+      </section>
 
-      <div className="panel">
-        <div className="page-header">
-          <h3>Nearby requests</h3>
-          {status ? <p className="small-muted">{status}</p> : null}
+      <section className="panel">
+        <div className="panel-header">
+          <div>
+            <h3>Nearby requests</h3>
+            <p className="muted">Tap accept to claim a job.</p>
+          </div>
+          <span className="pill">{jobs.length} results</span>
         </div>
-        <div className="list">
+        {status ? <p className="small-muted">{status}</p> : null}
+        <div className="card-grid">
           {jobs.map((job) => (
-            <div className="list-item" key={job.id}>
-              <strong>{job.title}</strong>
-              <p>{job.description}</p>
-              <p className="small-muted">{job.category} · {job.status}</p>
-              <button className="btn primary" type="button" onClick={() => acceptJob(job.id)}>
-                Accept
-              </button>
-            </div>
+            <article className="card-item" key={job.id}>
+              <div className="card-head">
+                <strong>{job.title}</strong>
+                <span className="status-chip">{job.status}</span>
+              </div>
+              <p className="muted">{job.description}</p>
+              <div className="card-meta">
+                <span>{job.category}</span>
+                <span>Lat {job.latitude} · Lng {job.longitude}</span>
+              </div>
+              <div className="row">
+                <button className="btn primary" type="button" onClick={() => acceptJob(job.id)}>
+                  Accept
+                </button>
+                <button className="btn ghost" type="button">
+                  View details
+                </button>
+              </div>
+            </article>
           ))}
-          {!status && jobs.length === 0 ? <p className="small-muted">No nearby requests loaded.</p> : null}
+          {!status && jobs.length === 0 ? (
+            <div className="empty-state">
+              <h4>No nearby requests loaded</h4>
+              <p className="muted">Enter a location and radius to find jobs.</p>
+            </div>
+          ) : null}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
-
