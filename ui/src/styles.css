@@ -246,6 +246,12 @@ a {
   gap: 28px;
 }
 
+.stack-sm {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .hero {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
@@ -329,6 +335,11 @@ a {
   font-size: 12px;
 }
 
+.pill-muted {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
 .status-chip {
   padding: 4px 10px;
   border-radius: 999px;
@@ -388,6 +399,10 @@ textarea {
   border: 1px solid #d1d5db;
   font-size: 14px;
   background: #ffffff;
+}
+
+select[multiple] {
+  min-height: 140px;
 }
 
 textarea {
@@ -537,6 +552,36 @@ textarea {
   font-size: 13px;
 }
 
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.chip input {
+  accent-color: #1f8f4d;
+}
+
+.chip:has(input:checked) {
+  background: #ecfdf3;
+  border-color: #1f8f4d;
+  color: #1f8f4d;
+}
+
 @media (max-width: 1024px) {
   .main-grid {
     grid-template-columns: 1fr;
@@ -562,4 +607,3 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
-

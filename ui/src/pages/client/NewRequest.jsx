@@ -1,19 +1,7 @@
 import React, { useState } from "react";
 import { apiJson } from "../../api.js";
 import MapPicker from "../../components/MapPicker.jsx";
-
-const CATEGORIES = [
-  "Plumbing",
-  "Electrical",
-  "HVAC",
-  "Appliances",
-  "Carpentry",
-  "Painting",
-  "Cleaning",
-  "Roofing",
-  "Landscaping",
-  "General Repair"
-];
+import { CATEGORIES } from "../../constants/categories.js";
 
 export default function NewRequest() {
   const [form, setForm] = useState({
@@ -141,7 +129,7 @@ export default function NewRequest() {
             <p className="muted">{form.description || "Describe the issue in detail."}</p>
             <div className="card-meta">
               <span>{form.category || "Category"}</span>
-              <span>Lat {form.latitude || "--"} · Lng {form.longitude || "--"}</span>
+              <span>Location selected on map</span>
             </div>
           </div>
           <div className="info-card">

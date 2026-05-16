@@ -1,13 +1,40 @@
 import React, { useState } from "react";
 import { apiJson } from "../../api.js";
+import MapPicker from "../../components/MapPicker.jsx";
 
 export default function ProfessionalDashboard() {
   const [filters, setFilters] = useState({ latitude: "", longitude: "", radiusKm: "10" });
   const [jobs, setJobs] = useState([]);
   const [status, setStatus] = useState("");
+  const [geoStatus, setGeoStatus] = useState("");
 
   const updateField = (field) => (event) => {
     setFilters((prev) => ({ ...prev, [field]: event.target.value }));
+  };
+
+  const applyLocation = ({ lat, lng }) => {
+    if (lat == null || lng == null) return;
+    setFilters((prev) => ({
+      ...prev,
+      latitude: lat.toFixed(6),
+      longitude: lng.toFixed(6)
+    }));
+  };
+
+  const useMyLocation = () => {
+    if (!navigator.geolocation) {
+      setGeoStatus("Geolocation is not supported on this device.");
+      return;
+    }
+    setGeoStatus("Getting your location...");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        applyLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        setGeoStatus("");
+      },
+      () => setGeoStatus("Unable to access your location."),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
 
   const loadJobs = async () => {
@@ -35,8 +62,8 @@ export default function ProfessionalDashboard() {
     <div className="stack-lg">
       <section className="panel hero-panel">
         <div className="page-header">
-          <p className="eyebrow">Professional dashboard</p>
-          <h2>Find nearby requests</h2>
+          <p className="eyebrow">Professional jobs</p>
+          <h2>Claim nearby requests</h2>
           <p className="muted">Search by location and accept jobs that fit your skills.</p>
         </div>
         <div className="row">
@@ -55,24 +82,38 @@ export default function ProfessionalDashboard() {
             <h3>Search filters</h3>
             <p className="muted">Adjust radius to widen or narrow your search.</p>
           </div>
+          <div className="row">
+            <span className="pill">Available</span>
+            <span className="pill pill-muted">Accepted</span>
+            <span className="pill pill-muted">Completed</span>
+          </div>
         </div>
         <div className="form-grid form-grid-3">
-          <div className="form-row">
-            <label>Latitude</label>
-            <input value={filters.latitude} onChange={updateField("latitude")} />
-          </div>
-          <div className="form-row">
-            <label>Longitude</label>
-            <input value={filters.longitude} onChange={updateField("longitude")} />
-          </div>
           <div className="form-row">
             <label>Radius (km)</label>
             <input value={filters.radiusKm} onChange={updateField("radiusKm")} />
           </div>
+          <button className="btn ghost" type="button" onClick={useMyLocation}>
+            Use my location
+          </button>
           <button className="btn primary" type="button" onClick={loadJobs}>
             Load requests
           </button>
         </div>
+        {geoStatus ? <p className="small-muted">{geoStatus}</p> : null}
+      </section>
+
+      <section className="panel soft-panel">
+        <div className="panel-header">
+          <div>
+            <h3>Select search location</h3>
+            <p className="muted">Click the map or search to set your search center.</p>
+          </div>
+        </div>
+        <MapPicker
+          value={{ lat: Number(filters.latitude), lng: Number(filters.longitude) }}
+          onChange={applyLocation}
+        />
       </section>
 
       <section className="panel">
@@ -88,13 +129,16 @@ export default function ProfessionalDashboard() {
           {jobs.map((job) => (
             <article className="card-item" key={job.id}>
               <div className="card-head">
-                <strong>{job.title}</strong>
+                <div className="stack-sm">
+                  <strong>{job.title}</strong>
+                  <span className="small-muted">{job.category}</span>
+                </div>
                 <span className="status-chip">{job.status}</span>
               </div>
               <p className="muted">{job.description}</p>
               <div className="card-meta">
-                <span>{job.category}</span>
                 <span>Lat {job.latitude} · Lng {job.longitude}</span>
+                <span>Posted today</span>
               </div>
               <div className="row">
                 <button className="btn primary" type="button" onClick={() => acceptJob(job.id)}>
