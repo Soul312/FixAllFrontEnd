@@ -19,7 +19,7 @@ public class SpaForwardingController {
         return "forward:/index.html";
     }
 
-    @RequestMapping("/{path:^(?!api$).*$}/{subPath:[^\\.]*}")
+    @RequestMapping("/{path:^(?!api$).*$}/{subPath:[^.]*}")
     public String forwardNestedRoutes() {
         return "forward:/index.html";
     }
