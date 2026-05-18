@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { apiJson } from "../../api.js";
 import MapPicker from "../../components/MapPicker.jsx";
+import { Link } from "react-router-dom";
 
 export default function ProfessionalDashboard() {
   const [filters, setFilters] = useState({ latitude: "", longitude: "", radiusKm: "10" });
@@ -144,9 +145,9 @@ export default function ProfessionalDashboard() {
                 <button className="btn primary" type="button" onClick={() => acceptJob(job.id)}>
                   Accept
                 </button>
-                <button className="btn ghost" type="button">
+                <Link to={`/client/request/${job.id}`} className="btn ghost">
                   View details
-                </button>
+                </Link>
               </div>
             </article>
           ))}

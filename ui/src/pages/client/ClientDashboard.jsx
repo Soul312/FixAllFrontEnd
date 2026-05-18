@@ -73,15 +73,29 @@ export default function ClientDashboard() {
         <div className="card-grid">
           {jobs.map((job) => (
             <article className="card-item" key={job.id}>
-              <div className="card-head">
-                <strong>{job.title}</strong>
-                <span className="status-chip">{job.status}</span>
-              </div>
-              <p className="muted">{job.description}</p>
-              <div className="card-meta">
-                <span>{job.category}</span>
-                <span>Lat {job.latitude} · Lng {job.longitude}</span>
-              </div>
+              <Link to={`/client/request/${job.id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                <div className="card-head">
+                  <strong>{job.title}</strong>
+                  <span className="status-chip">{job.status}</span>
+                </div>
+                <p className="muted">{job.description}</p>
+                <div className="card-meta">
+                  <span>{job.category}</span>
+                  <span>{job.professionalName ? `Pro: ${job.professionalName}` : "Awaiting match"}</span>
+                </div>
+              </Link>
+              {job.status === "COMPLETED" && (
+                <div className="row" style={{ marginTop: "8px" }}>
+                  {job.paymentStatus !== "PAID" && (
+                    <Link to={`/client/request/${job.id}/pay`} className="btn primary" style={{ fontSize: "12px", padding: "6px 12px" }}>
+                      Pay now
+                    </Link>
+                  )}
+                  <Link to={`/client/request/${job.id}/rate`} className="btn ghost" style={{ fontSize: "12px", padding: "6px 12px" }}>
+                    Rate
+                  </Link>
+                </div>
+              )}
             </article>
           ))}
           {!status && jobs.length === 0 ? (

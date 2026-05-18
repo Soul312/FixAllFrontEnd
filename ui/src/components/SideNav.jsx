@@ -20,29 +20,39 @@ export default function SideNav({ role }) {
             Jobs
           </NavLink>
         </div>
+      ) : isPro ? (
+        <>
+          <div className="side-section">
+            <p className="side-title">Dashboards</p>
+            <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/professional">
+              Available jobs
+            </NavLink>
+            <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/professional/jobs">
+              My jobs
+            </NavLink>
+            <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/professional/earnings">
+              Earnings
+            </NavLink>
+          </div>
+          <div className="side-section">
+            <p className="side-title">Account</p>
+            <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/profile">
+              Profile settings
+            </NavLink>
+          </div>
+        </>
       ) : (
-        <div className="side-section">
-          <p className="side-title">Dashboards</p>
-          {isPro ? (
-            <>
-              <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/professional">
-                Professional jobs
-              </NavLink>
-              <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/profile">
-                Profile settings
-              </NavLink>
-            </>
-          ) : (
-            <>
-              <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/client">
-                Client overview
-              </NavLink>
-              <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/client/request/new">
-                New request
-              </NavLink>
-            </>
-          )}
-        </div>
+        <>
+          <div className="side-section">
+            <p className="side-title">Dashboards</p>
+            <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/client">
+              My requests
+            </NavLink>
+            <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/client/request/new">
+              New request
+            </NavLink>
+          </div>
+        </>
       )}
     </aside>
   );
