@@ -17,6 +17,7 @@ export default function TopNav({ isAuthed, role, onSignOut }) {
             <Link to="/admin">Dashboard</Link>
             <Link to="/admin/users">Users</Link>
             <Link to="/admin/jobs">Jobs</Link>
+            <Link to="/profile">Profile</Link>
           </>
         ) : isPro ? (
           <>
@@ -29,6 +30,7 @@ export default function TopNav({ isAuthed, role, onSignOut }) {
           <>
             <Link to="/client">Dashboard</Link>
             <Link to="/client/request/new">New request</Link>
+            <Link to="/profile">Profile</Link>
           </>
         )}
       </nav>

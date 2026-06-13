@@ -8,7 +8,8 @@ import JobDetail from "./pages/client/JobDetail.jsx";
 import RateJob from "./pages/client/RateJob.jsx";
 import PayJob from "./pages/client/PayJob.jsx";
 import ProfessionalDashboard from "./pages/pro/ProfessionalDashboard.jsx";
-import Profile from "./pages/pro/Profile.jsx";
+import ProfileView from "./pages/profile/ProfileView.jsx";
+import ProfileEdit from "./pages/profile/ProfileEdit.jsx";
 import ProJobs from "./pages/pro/ProJobs.jsx";
 import ProEarnings from "./pages/pro/ProEarnings.jsx";
 import Home from "./pages/home/Home.jsx";
@@ -61,7 +62,9 @@ export default function App() {
         <Route path="/professional" element={<ProfessionalDashboard />} />
         <Route path="/professional/jobs" element={<ProJobs />} />
         <Route path="/professional/earnings" element={<ProEarnings />} />
-        <Route path="/profile" element={<Profile />} />
+        {/* Profile (all roles) */}
+        <Route path="/profile" element={<ProfileView />} />
+        <Route path="/profile/edit" element={<ProfileEdit />} />
         {/* Admin routes */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/users" element={<AdminUsers />} />

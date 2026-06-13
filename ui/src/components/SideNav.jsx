@@ -19,6 +19,10 @@ export default function SideNav({ role }) {
           <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/admin/jobs">
             Jobs
           </NavLink>
+          <p className="side-title">Account</p>
+          <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/profile">
+            Profile
+          </NavLink>
         </div>
       ) : isPro ? (
         <>
@@ -50,6 +54,12 @@ export default function SideNav({ role }) {
             </NavLink>
             <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/client/request/new">
               New request
+            </NavLink>
+          </div>
+          <div className="side-section">
+            <p className="side-title">Account</p>
+            <NavLink className={({ isActive }) => (isActive ? "side-link active" : "side-link")} to="/profile">
+              Profile
             </NavLink>
           </div>
         </>
