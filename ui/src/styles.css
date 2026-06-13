@@ -607,3 +607,223 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Stripe Payment Styles ─────────────────────────────────── */
+
+.stripe-checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.stripe-element-container {
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stripe-element-container:focus-within {
+  border-color: #1f8f4d;
+  box-shadow: 0 0 0 3px rgba(31, 143, 77, 0.1);
+}
+
+.stripe-pay-btn {
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stripe-pay-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(31, 143, 77, 0.3);
+}
+
+.stripe-pay-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.stripe-pay-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.stripe-spinner-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stripe-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: stripe-spin 0.7s linear infinite;
+}
+
+@keyframes stripe-spin {
+  to { transform: rotate(360deg); }
+}
+
+.stripe-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f0f0ff;
+  color: #6772e5;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stripe-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 14px;
+  line-height: 1.5;
+  animation: stripe-shake 0.4s ease;
+}
+
+@keyframes stripe-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+.stripe-error svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ── Success Panel ────────────────────────────────────────── */
+
+.stripe-success-panel {
+  background: linear-gradient(135deg, #ecfdf3 0%, #f0fdf4 50%, #ecfdf3 100%);
+  border: 1px solid #bbf7d0;
+  text-align: center;
+  padding: 48px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.stripe-success-animation {
+  animation: stripe-success-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes stripe-success-pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.stripe-success-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1f8f4d, #16a34a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(31, 143, 77, 0.3);
+}
+
+.stripe-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #ecfdf3;
+  border: 2px solid #1f8f4d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.stripe-success-title {
+  color: #1f8f4d;
+  margin: 0;
+  font-size: 26px;
+  animation: stripe-fade-up 0.5s ease 0.2s forwards;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@keyframes stripe-fade-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Receipt Card ─────────────────────────────────────────── */
+
+.stripe-receipt-card {
+  width: 100%;
+  max-width: 380px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: stripe-fade-up 0.5s ease 0.4s forwards;
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.stripe-receipt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stripe-status-badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stripe-status-success {
+  background: #ecfdf3;
+  color: #1f8f4d;
+}
+
+/* ── Loading Pulse ────────────────────────────────────────── */
+
+.stripe-loading-pulse {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1f8f4d, #16a34a);
+  margin: 0 auto;
+  animation: stripe-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes stripe-pulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+

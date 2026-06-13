@@ -70,7 +70,7 @@ export default function JobDetail() {
   const currentStep = STATUS_STEPS.indexOf(job.status);
   const isCancelled = job.status === "CANCELLED";
   const isCompleted = job.status === "COMPLETED";
-  const canPay = isCompleted && job.paymentStatus !== "PAID";
+  const canPay = (job.status === "ACCEPTED" || job.status === "COMPLETED") && job.paymentStatus !== "PAID";
   const canRate = isCompleted && !rating;
   const canCancel = !isCompleted && !isCancelled;
 

@@ -84,16 +84,18 @@ export default function ClientDashboard() {
                   <span>{job.professionalName ? `Pro: ${job.professionalName}` : "Awaiting match"}</span>
                 </div>
               </Link>
-              {job.status === "COMPLETED" && (
+              {(job.status === "ACCEPTED" || job.status === "COMPLETED") && (
                 <div className="row" style={{ marginTop: "8px" }}>
                   {job.paymentStatus !== "PAID" && (
                     <Link to={`/client/request/${job.id}/pay`} className="btn primary" style={{ fontSize: "12px", padding: "6px 12px" }}>
                       Pay now
                     </Link>
                   )}
-                  <Link to={`/client/request/${job.id}/rate`} className="btn ghost" style={{ fontSize: "12px", padding: "6px 12px" }}>
-                    Rate
-                  </Link>
+                  {job.status === "COMPLETED" && (
+                    <Link to={`/client/request/${job.id}/rate`} className="btn ghost" style={{ fontSize: "12px", padding: "6px 12px" }}>
+                      Rate
+                    </Link>
+                  )}
                 </div>
               )}
             </article>
