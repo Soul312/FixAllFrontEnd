@@ -161,7 +161,7 @@ export default function RateJob() {
           <div className="card-item">
             <div className="card-head">
               <strong>{job.title}</strong>
-              <span className="status-chip">COMPLETED</span>
+              <span className="status-chip completed">COMPLETED</span>
             </div>
             <p className="muted">{job.description}</p>
             <div className="card-meta">

@@ -267,7 +267,7 @@ export default function JobDetail() {
         </div>
         <div className="row" style={{ flexWrap: "wrap" }}>
           {canPay && (
-            <Link to={`/client/request/${id}/pay`} className="btn primary">
+            <Link to={`/client/request/${id}/pay`} className="btn money">
               Pay now
             </Link>
           )}

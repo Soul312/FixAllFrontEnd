@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { apiJson } from "../../api.js";
+import { statusChipClass } from "../../utils/status.js";
 
 /* ─── Inner checkout form (rendered inside <Elements>) ─────────────── */
 function CheckoutForm({ job, intentData, onSuccess }) {
@@ -81,7 +82,7 @@ function CheckoutForm({ job, intentData, onSuccess }) {
       )}
 
       <button
-        className="btn primary full stripe-pay-btn"
+        className="btn money full stripe-pay-btn"
         type="submit"
         disabled={!stripe || processing}
       >
@@ -379,7 +380,7 @@ export default function PayJob() {
           <div className="card-item">
             <div className="card-head">
               <strong>{job?.title}</strong>
-              <span className="status-chip">{job?.status}</span>
+              <span className={statusChipClass(job?.status)}>{job?.status}</span>
             </div>
             <p className="muted">{job?.description}</p>
             <div className="card-meta">

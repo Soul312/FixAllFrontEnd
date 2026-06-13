@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { apiJson } from "../../api.js";
 import MapPicker from "../../components/MapPicker.jsx";
 import { Link } from "react-router-dom";
+import { statusChipClass } from "../../utils/status.js";
 
 export default function ProfessionalDashboard() {
   const [filters, setFilters] = useState({ latitude: "", longitude: "", radiusKm: "10" });
@@ -140,7 +141,7 @@ export default function ProfessionalDashboard() {
                   <strong>{job.title}</strong>
                   <span className="small-muted">{job.category}</span>
                 </div>
-                <span className="status-chip">{job.status}</span>
+                <span className={statusChipClass(job.status)}>{job.status}</span>
               </div>
               <p className="muted">{job.description}</p>
               <div className="card-meta">

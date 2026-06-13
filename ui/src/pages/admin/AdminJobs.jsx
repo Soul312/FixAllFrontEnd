@@ -31,12 +31,12 @@ export default function AdminJobs() {
 
   const statusColor = (status) => {
     switch (status) {
-      case "REQUESTED": return "#0369a1";
-      case "ACCEPTED": return "#d97706";
-      case "IN_PROGRESS": return "#7c3aed";
-      case "COMPLETED": return "#1f8f4d";
-      case "CANCELLED": return "#dc2626";
-      default: return "#6b7280";
+      case "REQUESTED": return "#004ac6";
+      case "ACCEPTED": return "#855300";
+      case "IN_PROGRESS": return "#004ac6";
+      case "COMPLETED": return "#166534";
+      case "CANCELLED": return "#ba1a1a";
+      default: return "#5b6070";
     }
   };
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { apiJson } from "../../api.js";
 import { Link } from "react-router-dom";
+import { statusChipClass } from "../../utils/status.js";
 
 export default function ClientDashboard() {
   const [jobs, setJobs] = useState([]);
@@ -82,7 +83,7 @@ export default function ClientDashboard() {
               <Link to={`/client/request/${job.id}`} style={{ textDecoration: "none", color: "inherit" }}>
                 <div className="card-head">
                   <strong>{job.title}</strong>
-                  <span className="status-chip">{job.status}</span>
+                  <span className={statusChipClass(job.status)}>{job.status}</span>
                 </div>
                 <p className="muted">{job.description}</p>
                 <div className="card-meta">
@@ -93,7 +94,7 @@ export default function ClientDashboard() {
               {(job.status === "ACCEPTED" || job.status === "COMPLETED") && (
                 <div className="row" style={{ marginTop: "8px" }}>
                   {job.paymentStatus !== "PAID" && (
-                    <Link to={`/client/request/${job.id}/pay`} className="btn primary" style={{ fontSize: "12px", padding: "6px 12px" }}>
+                    <Link to={`/client/request/${job.id}/pay`} className="btn money" style={{ fontSize: "12px", padding: "6px 12px" }}>
                       Pay now
                     </Link>
                   )}
