@@ -68,7 +68,12 @@ export default function Login() {
               Professional
             </button>
           </div>
-          {error ? <p className="small-muted">{error}</p> : null}
+          {error && (
+            <div className="error-banner">
+              <span className="error-banner-icon">!</span>
+              <span>{error}</span>
+            </div>
+          )}
           <div className="row">
             <button className="btn primary" type="submit">Sign in</button>
             <Link className="btn ghost" to="/register">Register</Link>

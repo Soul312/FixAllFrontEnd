@@ -31,10 +31,10 @@ export default function NewRequest() {
           longitude: Number(form.longitude)
         })
       });
-      setStatus("Request submitted.");
+      setStatus({ type: "success", text: "Request submitted successfully!" });
       setForm({ title: "", description: "", category: "", latitude: "", longitude: "" });
     } catch (err) {
-      setStatus(err.message || "Failed to submit request.");
+      setStatus({ type: "error", text: err.message || "Failed to submit request." });
     }
   };
 
@@ -105,7 +105,18 @@ export default function NewRequest() {
               Use my location
             </button>
             {geoStatus ? <p className="small-muted">{geoStatus}</p> : null}
-            {status ? <p className="small-muted">{status}</p> : null}
+            {status?.type === "error" && (
+              <div className="error-banner">
+                <span className="error-banner-icon">!</span>
+                <span>{status.text}</span>
+              </div>
+            )}
+            {status?.type === "success" && (
+              <div className="success-banner">
+                <span className="success-banner-icon">✓</span>
+                <span>{status.text}</span>
+              </div>
+            )}
             <button className="btn primary" type="submit">Submit request</button>
           </form>
         </div>

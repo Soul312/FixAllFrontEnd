@@ -41,9 +41,9 @@ export default function Register() {
         method: "POST",
         body: JSON.stringify(form)
       });
-      setStatus("Registration complete. You can log in now.");
+      setStatus({ type: "success", text: "Registration complete! You can log in now." });
     } catch (err) {
-      setStatus(err.message || "Registration failed.");
+      setStatus({ type: "error", text: err.message || "Registration failed." });
     }
   };
 
@@ -94,7 +94,18 @@ export default function Register() {
               Professional
             </button>
           </div>
-          {status ? <p className="small-muted">{status}</p> : null}
+          {status?.type === "error" && (
+            <div className="error-banner">
+              <span className="error-banner-icon">!</span>
+              <span>{status.text}</span>
+            </div>
+          )}
+          {status?.type === "success" && (
+            <div className="success-banner">
+              <span className="success-banner-icon">✓</span>
+              <span>{status.text}</span>
+            </div>
+          )}
           <button className="btn primary" type="submit">Create account</button>
         </form>
       </div>

@@ -125,7 +125,13 @@ export default function ProfessionalDashboard() {
           </div>
           <span className="pill">{jobs.length} results</span>
         </div>
-        {status ? <p className="small-muted">{status}</p> : null}
+        {status && status !== "Loading..." && (
+          <div className="error-banner">
+            <span className="error-banner-icon">!</span>
+            <span>{status}</span>
+          </div>
+        )}
+        {status === "Loading..." && <p className="muted">Loading...</p>}
         <div className="card-grid">
           {jobs.map((job) => (
             <article className="card-item" key={job.id}>
