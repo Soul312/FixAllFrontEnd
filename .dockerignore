@@ -12,7 +12,9 @@ bin
 # Frontend (Vite) — rebuilt inside the image
 ui/node_modules
 ui/dist
-ui/.env
+# NOTE: ui/.env IS copied into the build — Vite needs VITE_* vars at build time.
+# Only public (browser-safe) keys belong here, e.g. VITE_GOOGLE_MAPS_KEY.
+ui/.env.local
 
 # IDE / editor
 .idea

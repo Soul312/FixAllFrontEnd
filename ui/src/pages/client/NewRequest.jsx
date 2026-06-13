@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { apiJson } from "../../api.js";
+import { apiJson, apiUpload } from "../../api.js";
 import MapPicker from "../../components/MapPicker.jsx";
 import { CATEGORIES } from "../../constants/categories.js";
+
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export default function NewRequest() {
   const [form, setForm] = useState({
@@ -11,19 +13,47 @@ export default function NewRequest() {
     latitude: "",
     longitude: ""
   });
+  const [images, setImages] = useState([]); // { file, url } previews
   const [status, setStatus] = useState("");
   const [geoStatus, setGeoStatus] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const updateField = (field) => (event) => {
     setForm((prev) => ({ ...prev, [field]: event.target.value }));
   };
 
+  const onPickImages = (event) => {
+    const picked = Array.from(event.target.files || []);
+    event.target.value = ""; // allow re-picking the same file
+    const accepted = [];
+    for (const file of picked) {
+      if (!file.type.startsWith("image/")) {
+        setStatus({ type: "error", text: `"${file.name}" is not an image.` });
+        continue;
+      }
+      if (file.size > MAX_IMAGE_BYTES) {
+        setStatus({ type: "error", text: `"${file.name}" is larger than 10 MB.` });
+        continue;
+      }
+      accepted.push({ file, url: URL.createObjectURL(file) });
+    }
+    setImages((prev) => [...prev, ...accepted]);
+  };
+
+  const removeImage = (index) => {
+    setImages((prev) => {
+      URL.revokeObjectURL(prev[index]?.url);
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setStatus("");
+    setSubmitting(true);
 
     try {
-      await apiJson("/api/requests", {
+      const job = await apiJson("/api/requests", {
         method: "POST",
         body: JSON.stringify({
           ...form,
@@ -31,10 +61,22 @@ export default function NewRequest() {
           longitude: Number(form.longitude)
         })
       });
+
+      // Upload any attached context images to the freshly created job.
+      for (const { file } of images) {
+        const data = new FormData();
+        data.append("photo", file);
+        await apiUpload(`/api/requests/${job.id}/photos`, data);
+      }
+
       setStatus({ type: "success", text: "Request submitted successfully!" });
       setForm({ title: "", description: "", category: "", latitude: "", longitude: "" });
+      images.forEach((img) => URL.revokeObjectURL(img.url));
+      setImages([]);
     } catch (err) {
       setStatus({ type: "error", text: err.message || "Failed to submit request." });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -101,6 +143,40 @@ export default function NewRequest() {
                 ))}
               </select>
             </div>
+            <div className="form-row">
+              <label>Photos (optional, max 10 MB each)</label>
+              <p className="small-muted" style={{ margin: 0 }}>
+                Add pictures of the issue so the professional has context.
+              </p>
+              <label className="btn ghost" style={{ alignSelf: "flex-start", marginTop: "8px" }}>
+                <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>add_photo_alternate</span>
+                Add images
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={onPickImages}
+                  style={{ display: "none" }}
+                />
+              </label>
+              {images.length > 0 && (
+                <div className="image-thumb-grid">
+                  {images.map((img, i) => (
+                    <div className="image-thumb" key={i}>
+                      <img src={img.url} alt={`Attachment ${i + 1}`} />
+                      <button
+                        type="button"
+                        className="image-thumb-remove"
+                        onClick={() => removeImage(i)}
+                        aria-label="Remove image"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <button className="btn ghost" type="button" onClick={useMyLocation}>
               Use my location
             </button>
@@ -117,7 +193,9 @@ export default function NewRequest() {
                 <span>{status.text}</span>
               </div>
             )}
-            <button className="btn primary" type="submit">Submit request</button>
+            <button className="btn primary" type="submit" disabled={submitting}>
+              {submitting ? "Submitting…" : "Submit request"}
+            </button>
           </form>
         </div>
 

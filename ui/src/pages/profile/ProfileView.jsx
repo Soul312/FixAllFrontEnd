@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiJson } from "../../api.js";
 import { getAuth } from "../../auth.js";
+import Avatar from "../../components/Avatar.jsx";
 
 export default function ProfileView() {
   const role = getAuth()?.role;
@@ -66,7 +67,8 @@ export default function ProfileView() {
             </div>
             <span className="pill">{me.role}</span>
           </div>
-          <div className="card-item">
+          <div className="card-item" style={{ flexDirection: "row", alignItems: "center", gap: "16px" }}>
+            <Avatar src={me.avatarUrl} name={me.fullName} size={72} />
             <div className="card-meta" style={{ flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
               <span><strong>Full name:</strong> {me.fullName || "—"}</span>
               <span><strong>Email:</strong> {me.email}</span>

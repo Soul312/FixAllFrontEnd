@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { apiJson } from "../../api.js";
+import { apiJson, apiUpload } from "../../api.js";
 import { getAuth } from "../../auth.js";
 import { CATEGORIES } from "../../constants/categories.js";
+import Avatar from "../../components/Avatar.jsx";
+
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export default function ProfileEdit() {
   const navigate = useNavigate();
@@ -11,11 +14,13 @@ export default function ProfileEdit() {
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [bio, setBio] = useState("");
   const [categories, setCategories] = useState([]);
   const [status, setStatus] = useState("Loading...");
   const [saving, setSaving] = useState(false);
+  const [avatarBusy, setAvatarBusy] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -28,6 +33,7 @@ export default function ProfileEdit() {
         if (!isMounted) return;
         setFullName(user?.fullName || "");
         setPhone(user?.phone || "");
+        setAvatarUrl(user?.avatarUrl || "");
         if (isPro && profile) {
           setBusinessName(profile.businessName || "");
           setBio(profile.bio || "");
@@ -44,6 +50,34 @@ export default function ProfileEdit() {
       isMounted = false;
     };
   }, [isPro]);
+
+  const onPickAvatar = async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setStatus("Profile picture must be an image.");
+      return;
+    }
+    if (file.size > MAX_AVATAR_BYTES) {
+      setStatus("Profile picture must be under 5 MB.");
+      return;
+    }
+    setAvatarBusy(true);
+    setStatus("");
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      const updated = await apiUpload("/api/auth/me/avatar", data);
+      setAvatarUrl(updated?.avatarUrl || "");
+      // Tell the app shell to refresh the sidebar avatar.
+      window.dispatchEvent(new Event("fixall:user-updated"));
+    } catch (err) {
+      setStatus(err.message || "Failed to upload profile picture.");
+    } finally {
+      setAvatarBusy(false);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -92,6 +126,26 @@ export default function ProfileEdit() {
           <p className="muted">Loading...</p>
         ) : (
           <form className="form-grid" onSubmit={handleSubmit}>
+            <div className="form-row">
+              <label>Profile picture</label>
+              <div className="avatar-editor">
+                <Avatar src={avatarUrl} name={fullName} size={72} />
+                <div className="stack-sm">
+                  <label className="btn ghost" style={{ alignSelf: "flex-start" }}>
+                    <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>photo_camera</span>
+                    {avatarBusy ? "Uploading…" : "Change photo"}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={onPickAvatar}
+                      disabled={avatarBusy}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                  <span className="small-muted">JPG, PNG, WEBP or GIF, up to 5 MB.</span>
+                </div>
+              </div>
+            </div>
             <div className="form-row">
               <label>Full name</label>
               <input value={fullName} onChange={(e) => setFullName(e.target.value)} />

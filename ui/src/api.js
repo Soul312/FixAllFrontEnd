@@ -11,6 +11,16 @@ function resolveUrl(path) {
 }
 
 /**
+ * Resolve a stored-file path (e.g. "/uploads/job-photos/x.jpg") returned by the
+ * backend into a fully-qualified URL the browser can load. Backend serves these
+ * from its own origin, so we prepend the API base URL.
+ */
+export function fileUrl(path) {
+  if (!path) return "";
+  return resolveUrl(path);
+}
+
+/**
  * Parse a structured error message from the backend response.
  * The backend returns JSON like: { status, error, message }
  * We extract the user-friendly "message" field.
@@ -85,6 +95,47 @@ export async function apiFetch(path, options = {}) {
   }
 
   return response;
+}
+
+/**
+ * Upload multipart form data (e.g. file uploads). Does NOT set Content-Type so
+ * the browser can add the correct multipart boundary. Returns parsed JSON.
+ */
+export async function apiUpload(path, formData, options = {}) {
+  const auth = getAuth();
+  const headers = { ...(options.headers || {}) };
+
+  if (auth?.token) {
+    headers.Authorization = `Bearer ${auth.token}`;
+  }
+
+  let response;
+  try {
+    response = await fetch(resolveUrl(path), {
+      method: "POST",
+      ...options,
+      body: formData,
+      headers
+    });
+  } catch (networkError) {
+    throw new Error(
+      "Unable to connect to the server. Please check that the backend is running and try again."
+    );
+  }
+
+  if (response.status === 401) {
+    clearAuth();
+    throw new Error("Your session has expired. Please log in again.");
+  }
+
+  if (!response.ok) {
+    const message = await parseErrorResponse(response);
+    throw new Error(message);
+  }
+
+  if (response.status === 204) return null;
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
 
 export async function apiJson(path, options) {

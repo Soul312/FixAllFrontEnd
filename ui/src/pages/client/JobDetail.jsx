@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { apiJson, apiFetch } from "../../api.js";
+import { apiJson, apiFetch, fileUrl } from "../../api.js";
 
 const STATUS_STEPS = ["REQUESTED", "ACCEPTED", "COMPLETED"];
 
@@ -256,6 +256,32 @@ export default function JobDetail() {
           )}
         </div>
       </section>
+
+      {/* Attached photos */}
+      {job.photos && job.photos.length > 0 && (
+        <section className="panel">
+          <div className="panel-header">
+            <div>
+              <h3>Attached photos</h3>
+              <p className="muted">Context images shared by the client.</p>
+            </div>
+            <span className="pill">{job.photos.length}</span>
+          </div>
+          <div className="image-thumb-grid">
+            {job.photos.map((photo, i) => (
+              <a
+                className="image-thumb"
+                href={fileUrl(photo)}
+                target="_blank"
+                rel="noreferrer"
+                key={i}
+              >
+                <img src={fileUrl(photo)} alt={`Job photo ${i + 1}`} />
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Action buttons */}
       <section className="panel">

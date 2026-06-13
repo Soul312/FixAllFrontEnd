@@ -1,5 +1,6 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
+import Avatar from "./Avatar.jsx";
 
 function NavItem({ to, icon, children, end }) {
   return (
@@ -14,12 +15,31 @@ function NavItem({ to, icon, children, end }) {
   );
 }
 
-export default function SideNav({ role }) {
+export default function SideNav({ role, user }) {
   const isPro = role === "PROFESSIONAL";
   const isAdmin = role === "ADMIN";
 
+  const cta = isAdmin
+    ? { to: "/admin", icon: "dashboard", label: "Open dashboard" }
+    : isPro
+    ? { to: "/professional", icon: "search", label: "Find jobs" }
+    : { to: "/client/request/new", icon: "add_circle", label: "New request" };
+
   return (
     <aside className="side-nav">
+      <Link to="/profile" className="side-profile">
+        <Avatar src={user?.avatarUrl} name={user?.fullName} size={44} />
+        <div className="side-profile-text">
+          <span className="side-welcome">Welcome back</span>
+          <span className="side-name">{user?.fullName || "Your account"}</span>
+        </div>
+      </Link>
+
+      <Link to={cta.to} className="btn primary full">
+        <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>{cta.icon}</span>
+        {cta.label}
+      </Link>
+
       {isAdmin ? (
         <div className="side-section">
           <p className="side-title">Administration</p>
