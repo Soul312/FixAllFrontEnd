@@ -2,7 +2,13 @@
 #   docker compose up --build
 services:
   frontend:
-    build: .
+    build:
+      context: .
+      # Values come from FixAll Frontend/.env (Compose reads it automatically).
+      # VITE_* vars are baked into the browser bundle at build time.
+      args:
+        VITE_GOOGLE_MAPS_KEY: ${VITE_GOOGLE_MAPS_KEY:-}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080}
     container_name: fixall-frontend
     restart: unless-stopped
     ports:

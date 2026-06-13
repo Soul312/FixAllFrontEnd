@@ -10,6 +10,14 @@ WORKDIR /ui
 COPY ui/package.json ui/package-lock.json ./
 RUN npm ci
 
+# Build-time Vite env. Passed as build args from docker-compose (sourced from
+# FixAll Frontend/.env). Vite picks up VITE_* vars from the environment and bakes
+# them into the bundle.
+ARG VITE_GOOGLE_MAPS_KEY=""
+ARG VITE_API_BASE_URL="http://localhost:8080"
+ENV VITE_GOOGLE_MAPS_KEY=$VITE_GOOGLE_MAPS_KEY
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 # Build the SPA -> produces /ui/dist
 COPY ui/ ./
 RUN npm run build
