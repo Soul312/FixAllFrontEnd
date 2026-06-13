@@ -1,0 +1,11 @@
+# Builds and runs the frontend (Spring Boot app serving the Vite SPA).
+#   docker compose up --build
+services:
+  frontend:
+    build: .
+    container_name: fixall-frontend
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      JAVA_OPTS: ""

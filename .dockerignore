@@ -1,0 +1,33 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Gradle / build output
+.gradle
+build
+out
+bin
+
+# Frontend (Vite) — rebuilt inside the image
+ui/node_modules
+ui/dist
+ui/.env
+
+# IDE / editor
+.idea
+*.iml
+*.ipr
+*.iws
+.vscode
+.settings
+.classpath
+.project
+
+# Local docs
+HELP.md
+README.md
+
+# OS noise
+.DS_Store
+Thumbs.db
