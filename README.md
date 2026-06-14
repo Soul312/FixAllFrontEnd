@@ -1,47 +1,62 @@
-# FixAll Frontend (Spring Boot + React)
+# FixAll — Web App (React + Spring Boot)
 
-This repo serves a React SPA with Spring Boot and connects to the FixAll backend via HTTP APIs.
+The web client for **FixAll**, an on-demand home-services marketplace. A React 18 + Vite
+SPA is built and served as static resources by a thin Spring Boot app, which talks to the
+[FixAll backend](../FixAll%20Backend) over HTTP. The web app serves **all three roles** —
+clients, professionals, and administrators.
 
-## Stack
-- Spring Boot 3 (serves `/static`)
-- React 18 + Vite
-- React Router
+## Tech stack
+- **React 18 + Vite** (SPA in `ui/`), React Router
+- **Spring Boot 3.3.5** (Java 17) — serves the built SPA from `/static` and forwards
+  non-API routes to `index.html`
+- **Stripe.js** (`@stripe/react-stripe-js`) for in-app payments
+- **Google Maps** for the location picker
 
-## Setup
-1. Java 17 installed (for Spring Boot)
-2. Node.js 18+ installed (for the UI)
-
-## Environment variables
-Create a local file at `ui/.env` based on `ui/.env.temp`.
-
+## Project layout
 ```
-VITE_API_BASE_URL=http://localhost:8080
-VITE_GOOGLE_MAPS_KEY=
+FixAll Frontend/
+├─ ui/                 # React + Vite source (the actual app)
+│  ├─ src/pages/       # auth, client, pro, admin, profile, home
+│  └─ .env.example     # VITE_* config template
+├─ src/                # Spring Boot wrapper that serves ui/dist
+├─ Dockerfile          # multi-stage: build SPA -> build jar -> run
+└─ docker-compose.yml
 ```
 
-## Development (UI)
+## Configuration
+`VITE_*` variables are **baked into the bundle at build time**, so only public,
+browser-safe values belong here.
+```bash
+cp ui/.env.example ui/.env
 ```
-cd "C:\Users\soula\IdeaProjects\FixAll FrontEnd\ui"
+| Variable | Purpose |
+|---|---|
+| `VITE_API_BASE_URL` | Backend base URL (default `http://localhost:8080`) |
+| `VITE_GOOGLE_MAPS_KEY` | Google Maps **browser** key (restrict by HTTP referrer) |
+
+> The Stripe **publishable** key is fetched at runtime from the backend
+> (`GET /api/payments/config`) — it does **not** go in `ui/.env`.
+
+## Run with Docker (recommended)
+Docker Compose reads `FixAll Frontend/.env` and passes `VITE_*` into the image build:
+```bash
+docker compose up -d --build frontend
+```
+Served at **`http://localhost:8081`** (port chosen to avoid clashing with the backend).
+Because `VITE_*` is compiled in, **rebuild** after changing env values.
+
+## Local development
+```bash
+cd ui
 npm install
-npm run dev
+npm run dev          # Vite dev server with hot reload
 ```
-
-## Build UI for Spring Boot
+Build the SPA into Spring Boot static resources and run the server:
+```bash
+cd ui && npm run build      # outputs ui/dist (Gradle copies it into static/)
+cd .. && ./gradlew bootRun  # http://localhost:8081
 ```
-cd "C:\Users\soula\IdeaProjects\FixAll FrontEnd\ui"
-npm run build
-```
-
-Then run Spring Boot (the Gradle task copies `ui/dist` into `src/main/resources/static`).
-
-## Run Spring Boot
-```
-cd "C:\Users\soula\IdeaProjects\FixAll FrontEnd"
-.\gradlew.bat bootRun
-```
-
-The Spring Boot server runs on `http://localhost:8081` by default to avoid clashing with the backend.
 
 ## Notes
-- API base URL is controlled by `VITE_API_BASE_URL`.
-- Non-API routes forward to `index.html` so React Router works on refresh.
+- The backend must be running and reachable at `VITE_API_BASE_URL`.
+- API calls live in `ui/src/api.js` (`apiJson`, `apiUpload`, `fileUrl`).

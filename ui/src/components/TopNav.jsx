@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function TopNav({ isAuthed, role, onSignOut }) {
   const isPro = role === "PROFESSIONAL";
+  const isAdmin = role === "ADMIN";
 
   return (
     <header className="top-nav">
@@ -11,15 +12,25 @@ export default function TopNav({ isAuthed, role, onSignOut }) {
         <span>FixAll</span>
       </div>
       <nav className="nav-links">
-        {isPro ? (
+        {isAdmin ? (
           <>
-            <Link to="/professional">Jobs</Link>
+            <Link to="/admin">Dashboard</Link>
+            <Link to="/admin/users">Users</Link>
+            <Link to="/admin/jobs">Jobs</Link>
+            <Link to="/profile">Profile</Link>
+          </>
+        ) : isPro ? (
+          <>
+            <Link to="/professional">Find jobs</Link>
+            <Link to="/professional/jobs">My jobs</Link>
+            <Link to="/professional/earnings">Earnings</Link>
             <Link to="/profile">Profile</Link>
           </>
         ) : (
           <>
             <Link to="/client">Dashboard</Link>
             <Link to="/client/request/new">New request</Link>
+            <Link to="/profile">Profile</Link>
           </>
         )}
       </nav>

@@ -4,8 +4,14 @@ import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import ClientDashboard from "./pages/client/ClientDashboard.jsx";
 import NewRequest from "./pages/client/NewRequest.jsx";
+import JobDetail from "./pages/client/JobDetail.jsx";
+import RateJob from "./pages/client/RateJob.jsx";
+import PayJob from "./pages/client/PayJob.jsx";
 import ProfessionalDashboard from "./pages/pro/ProfessionalDashboard.jsx";
-import Profile from "./pages/pro/Profile.jsx";
+import ProfileView from "./pages/profile/ProfileView.jsx";
+import ProfileEdit from "./pages/profile/ProfileEdit.jsx";
+import ProJobs from "./pages/pro/ProJobs.jsx";
+import ProEarnings from "./pages/pro/ProEarnings.jsx";
 import Home from "./pages/home/Home.jsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminUsers from "./pages/admin/AdminUsers.jsx";
@@ -46,10 +52,19 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
+        {/* Client routes */}
         <Route path="/client" element={<ClientDashboard />} />
         <Route path="/client/request/new" element={<NewRequest />} />
+        <Route path="/client/request/:id" element={<JobDetail />} />
+        <Route path="/client/request/:id/rate" element={<RateJob />} />
+        <Route path="/client/request/:id/pay" element={<PayJob />} />
+        {/* Professional routes */}
         <Route path="/professional" element={<ProfessionalDashboard />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/professional/jobs" element={<ProJobs />} />
+        <Route path="/professional/earnings" element={<ProEarnings />} />
+        {/* Profile (all roles) */}
+        <Route path="/profile" element={<ProfileView />} />
+        <Route path="/profile/edit" element={<ProfileEdit />} />
         {/* Admin routes */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/users" element={<AdminUsers />} />

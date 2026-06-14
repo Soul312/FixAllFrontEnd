@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { apiJson } from "../../api.js";
 import MapPicker from "../../components/MapPicker.jsx";
+import { Link } from "react-router-dom";
+import { statusChipClass } from "../../utils/status.js";
 
 export default function ProfessionalDashboard() {
   const [filters, setFilters] = useState({ latitude: "", longitude: "", radiusKm: "10" });
@@ -124,7 +126,13 @@ export default function ProfessionalDashboard() {
           </div>
           <span className="pill">{jobs.length} results</span>
         </div>
-        {status ? <p className="small-muted">{status}</p> : null}
+        {status && status !== "Loading..." && (
+          <div className="error-banner">
+            <span className="error-banner-icon">!</span>
+            <span>{status}</span>
+          </div>
+        )}
+        {status === "Loading..." && <p className="muted">Loading...</p>}
         <div className="card-grid">
           {jobs.map((job) => (
             <article className="card-item" key={job.id}>
@@ -133,7 +141,7 @@ export default function ProfessionalDashboard() {
                   <strong>{job.title}</strong>
                   <span className="small-muted">{job.category}</span>
                 </div>
-                <span className="status-chip">{job.status}</span>
+                <span className={statusChipClass(job.status)}>{job.status}</span>
               </div>
               <p className="muted">{job.description}</p>
               <div className="card-meta">
@@ -144,9 +152,9 @@ export default function ProfessionalDashboard() {
                 <button className="btn primary" type="button" onClick={() => acceptJob(job.id)}>
                   Accept
                 </button>
-                <button className="btn ghost" type="button">
+                <Link to={`/client/request/${job.id}`} className="btn ghost">
                   View details
-                </button>
+                </Link>
               </div>
             </article>
           ))}
