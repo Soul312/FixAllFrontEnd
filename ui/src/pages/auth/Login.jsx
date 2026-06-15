@@ -5,7 +5,14 @@ import { Link } from "react-router-dom";
 
 const TEST_ACCOUNTS = {
   client: { email: "client@test.com", password: "Password123!" },
-  professional: { email: "pro@test.com", password: "Password123!" }
+  professional: { email: "pro@test.com", password: "Password123!" },
+  admin: { email: "admin@test.com", password: "Password123!" }
+};
+
+const HOME_BY_ROLE = {
+  PROFESSIONAL: "/professional",
+  ADMIN: "/admin",
+  CLIENT: "/client"
 };
 
 export default function Login() {
@@ -29,7 +36,7 @@ export default function Login() {
       }
 
       setAuth({ token: data.token, role: data.role, userId: data.userId });
-      window.location.href = data.role === "PROFESSIONAL" ? "/professional" : "/client";
+      window.location.href = HOME_BY_ROLE[data.role] || "/client";
     } catch (err) {
       setError(err.message || "Login failed.");
     }
@@ -66,6 +73,9 @@ export default function Login() {
             </button>
             <button className="btn ghost" type="button" onClick={() => applyTestAccount("professional")}>
               Professional
+            </button>
+            <button className="btn ghost" type="button" onClick={() => applyTestAccount("admin")}>
+              Admin
             </button>
           </div>
           {error && (

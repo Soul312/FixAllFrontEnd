@@ -15,6 +15,13 @@ const TEST_PROFILES = {
     password: "Password123!",
     phone: "555-0110",
     role: "PROFESSIONAL"
+  },
+  admin: {
+    fullName: "Test Admin",
+    email: "admin@test.com",
+    password: "Password123!",
+    phone: "555-0199",
+    role: "ADMIN"
   }
 };
 
@@ -83,6 +90,7 @@ export default function Register() {
             <select value={form.role} onChange={updateField("role")}>
               <option value="CLIENT">Client</option>
               <option value="PROFESSIONAL">Professional</option>
+              <option value="ADMIN">Admin</option>
             </select>
           </div>
           <div className="test-row">
@@ -92,6 +100,9 @@ export default function Register() {
             </button>
             <button className="btn ghost" type="button" onClick={() => applyTestProfile("professional")}>
               Professional
+            </button>
+            <button className="btn ghost" type="button" onClick={() => applyTestProfile("admin")}>
+              Admin
             </button>
           </div>
           {status?.type === "error" && (
