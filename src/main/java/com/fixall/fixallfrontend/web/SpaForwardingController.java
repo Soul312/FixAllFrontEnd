@@ -10,10 +10,12 @@ public class SpaForwardingController {
             "/",
             "/login",
             "/register",
+            "/home",
             "/client",
             "/client/request/new",
             "/professional",
-            "/profile"
+            "/profile",
+            "/admin"
     })
     public String forwardRootRoutes() {
         return "forward:/index.html";
