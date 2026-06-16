@@ -1,14 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { apiJson } from "../../api.js";
 import MapPicker from "../../components/MapPicker.jsx";
 import { Link } from "react-router-dom";
 import { statusChipClass } from "../../utils/status.js";
+import { MakeOfferForm, OfferRow } from "../../components/Offers.jsx";
 
 export default function ProfessionalDashboard() {
   const [filters, setFilters] = useState({ latitude: "", longitude: "", radiusKm: "10" });
   const [jobs, setJobs] = useState([]);
+  const [myOffers, setMyOffers] = useState([]);
   const [status, setStatus] = useState("");
   const [geoStatus, setGeoStatus] = useState("");
+
+  const loadMyOffers = async () => {
+    try {
+      const data = await apiJson("/api/offers/my");
+      setMyOffers(data || []);
+    } catch {
+      setMyOffers([]);
+    }
+  };
+
+  useEffect(() => { loadMyOffers(); }, []);
+
+  // Active offers keyed by job for quick lookup on the nearby-request cards.
+  const offerByJob = {};
+  myOffers.forEach((o) => {
+    if (o.status === "AWAITING_CLIENT" || o.status === "AWAITING_PRO") offerByJob[o.jobId] = o;
+  });
+  const activeOffers = myOffers.filter(
+    (o) => o.status === "AWAITING_CLIENT" || o.status === "AWAITING_PRO"
+  );
 
   const updateField = (field) => (event) => {
     setFilters((prev) => ({ ...prev, [field]: event.target.value }));
@@ -46,17 +68,9 @@ export default function ProfessionalDashboard() {
       const data = await apiJson(`/api/requests/available${query}`);
       setJobs(data || []);
       setStatus("");
+      loadMyOffers();
     } catch (err) {
       setStatus(err.message || "Failed to load nearby requests.");
-    }
-  };
-
-  const acceptJob = async (jobId) => {
-    try {
-      await apiJson(`/api/requests/${jobId}/accept`, { method: "PATCH" });
-      setJobs((prev) => prev.filter((job) => job.id !== jobId));
-    } catch (err) {
-      setStatus(err.message || "Failed to accept request.");
     }
   };
 
@@ -77,6 +91,28 @@ export default function ProfessionalDashboard() {
           </button>
         </div>
       </section>
+
+      {activeOffers.length > 0 && (
+        <section className="panel">
+          <div className="panel-header">
+            <div>
+              <h3>My offers</h3>
+              <p className="muted">Respond to client counter-offers, or accept their price.</p>
+            </div>
+            <span className="pill">{activeOffers.length} active</span>
+          </div>
+          <div className="card-grid">
+            {activeOffers.map((offer) => (
+              <OfferRow
+                key={offer.id}
+                offer={offer}
+                viewer="PRO"
+                onChanged={loadMyOffers}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="panel">
         <div className="panel-header">
@@ -148,14 +184,20 @@ export default function ProfessionalDashboard() {
                 <span>Lat {job.latitude} · Lng {job.longitude}</span>
                 <span>Posted today</span>
               </div>
-              <div className="row">
-                <button className="btn primary" type="button" onClick={() => acceptJob(job.id)}>
-                  Accept
-                </button>
-                <Link to={`/client/request/${job.id}`} className="btn ghost">
-                  View details
-                </Link>
-              </div>
+              {offerByJob[job.id] && (
+                <p className="small-muted">
+                  Your offer: <strong>{Number(offerByJob[job.id].amount).toFixed(0)} MAD</strong>
+                  {" · "}
+                  {offerByJob[job.id].awaitingParty === "PRO"
+                    ? "client countered — respond in “My offers” below"
+                    : "awaiting client response"}
+                </p>
+              )}
+              <MakeOfferForm
+                jobId={job.id}
+                existingAmount={offerByJob[job.id]?.amount}
+                onSubmitted={loadMyOffers}
+              />
             </article>
           ))}
           {!status && jobs.length === 0 ? (

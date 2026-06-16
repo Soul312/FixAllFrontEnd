@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { apiJson, apiFetch, fileUrl } from "../../api.js";
+import { OfferRow } from "../../components/Offers.jsx";
 
 const STATUS_STEPS = ["REQUESTED", "ACCEPTED", "COMPLETED"];
 
@@ -19,35 +20,48 @@ export default function JobDetail() {
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [rating, setRating] = useState(null);
+  const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [cancelMsg, setCancelMsg] = useState("");
 
+  async function loadJob() {
+    const data = await apiJson(`/api/requests/${id}`);
+    setJob(data);
+
+    if (data.status === "COMPLETED") {
+      try {
+        const r = await apiJson(`/api/ratings/job/${id}`);
+        setRating(r);
+      } catch {
+        // No rating yet — that's fine
+      }
+    }
+
+    // Offers are only relevant while the job is still open for bidding.
+    if (data.status === "REQUESTED") {
+      try {
+        const list = await apiJson(`/api/offers/job/${id}`);
+        setOffers(list || []);
+      } catch {
+        setOffers([]);
+      }
+    } else {
+      setOffers([]);
+    }
+  }
+
   useEffect(() => {
     let mounted = true;
-
-    async function load() {
+    (async () => {
       try {
-        const data = await apiJson(`/api/requests/${id}`);
-        if (!mounted) return;
-        setJob(data);
-
-        if (data.status === "COMPLETED") {
-          try {
-            const r = await apiJson(`/api/ratings/job/${id}`);
-            if (mounted) setRating(r);
-          } catch {
-            // No rating yet — that's fine
-          }
-        }
+        await loadJob();
       } catch (err) {
         if (mounted) setError(err.message || "Failed to load job details.");
       } finally {
         if (mounted) setLoading(false);
       }
-    }
-
-    load();
+    })();
     return () => { mounted = false; };
   }, [id]);
 
@@ -163,6 +177,38 @@ export default function JobDetail() {
         <section className="panel" style={{ background: "#fef2f2", border: "1px solid #fecaca" }}>
           <h3 style={{ color: "#dc2626", margin: "0 0 6px" }}>Request Cancelled</h3>
           <p className="muted">This request has been cancelled and is no longer active.</p>
+        </section>
+      )}
+
+      {/* Price offers from professionals (only while the request is open) */}
+      {job.status === "REQUESTED" && (
+        <section className="panel">
+          <div className="panel-header">
+            <div>
+              <h3>Price offers</h3>
+              <p className="muted">
+                Professionals propose a price. Accept one to assign the job, or counter with your own price.
+              </p>
+            </div>
+            <span className="pill">{offers.length}</span>
+          </div>
+          {offers.length === 0 ? (
+            <div className="empty-state">
+              <h4>No offers yet</h4>
+              <p className="muted">Professionals nearby can see your request and will propose a price.</p>
+            </div>
+          ) : (
+            <div className="card-grid">
+              {offers.map((offer) => (
+                <OfferRow
+                  key={offer.id}
+                  offer={offer}
+                  viewer="CLIENT"
+                  onChanged={() => loadJob()}
+                />
+              ))}
+            </div>
+          )}
         </section>
       )}
 
